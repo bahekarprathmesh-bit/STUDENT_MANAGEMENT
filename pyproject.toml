@@ -9,6 +9,3 @@ dependencies = [
     "supabase",
     "python-dotenv"
 ]
-
-[tool.vercel]
-entrypoint = "BACKEND.main:app"
