@@ -1,2 +1,14 @@
+[project]
+name = "student-management"
+version = "1.0.0"
+requires-python = ">=3.12"
+
+dependencies = [
+    "fastapi",
+    "uvicorn",
+    "supabase",
+    "python-dotenv"
+]
+
 [tool.vercel]
 entrypoint = "BACKEND.main:app"
