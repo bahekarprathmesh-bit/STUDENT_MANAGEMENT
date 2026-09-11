@@ -10,8 +10,8 @@ load_dotenv()
 app = FastAPI()
 
 # Get Supabase credentials
-SUPABASE_URL = os.getenv("SUPABASE_URL")
-SUPABASE_KEY = os.getenv("SUPABASE_KEY")
+SUPABASE_URL = os.getenv("https://syfynpyyzqqqnjwhorde.supabase.co")
+SUPABASE_KEY = os.getenv("sb_publishable_gbdLwCIdSjwQWNasBgJ0Jg_9DKsd3tF")
 
 
 print("SUPABASE URL:", SUPABASE_URL)
