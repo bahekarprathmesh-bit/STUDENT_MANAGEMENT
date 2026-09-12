@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Student Management System</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body>
+
+<div class="app">
+
+    <!-- ================= SIDEBAR ================= -->
+
+    <aside class="sidebar">
+
+        <div class="logo">
+            <div class="logo-icon">
+                <i data-lucide="graduation-cap"></i>
+            </div>
+
+            <div>
+                <h2>Student</h2>
+                <span>Management</span>
+            </div>
+        </div>
+
+        <div class="menu-title">
+            MAIN MENU
+        </div>
+
+        <nav>
+
+            <button class="menu-item active" data-page="dashboard">
+                <i data-lucide="layout-dashboard"></i>
+                <span>Dashboard</span>
+            </button>
+
+            <button class="menu-item" data-page="add">
+                <i data-lucide="user-plus"></i>
+                <span>Add Student</span>
+            </button>
+
+            <button class="menu-item" data-page="students">
+                <i data-lucide="users"></i>
+                <span>View Students</span>
+            </button>
+
+            <button class="menu-item" data-page="update">
+                <i data-lucide="user-pen"></i>
+                <span>Update Student</span>
+            </button>
+
+            <button class="menu-item" data-page="delete">
+                <i data-lucide="user-minus"></i>
+                <span>Delete Student</span>
+            </button>
+
+        </nav>
+
+        <div class="sidebar-bottom">
+
+            <div class="api-status">
+                <div class="status-dot"></div>
+
+                <div>
+                    <strong>Backend Connected</strong>
+                    <small>FastAPI + Supabase</small>
+                </div>
+            </div>
+
+            <div class="sidebar-footer">
+                Student Management System
+                <br>
+                <span>v1.0.0</span>
+            </div>
+
+        </div>
+
+    </aside>
+
+
+    <!-- ================= MAIN CONTENT ================= -->
+
+    <main class="main">
+
+        <!-- TOPBAR -->
+
+        <header class="topbar">
+
+            <div class="mobile-logo">
+                <i data-lucide="graduation-cap"></i>
+                Student Manager
+            </div>
+
+            <div class="topbar-right">
+
+                <button class="icon-btn" onclick="refreshCurrentPage()">
+                    <i data-lucide="refresh-cw"></i>
+                </button>
+
+                <div class="profile">
+
+                    <div class="profile-avatar">
+                        P
+                    </div>
+
+                    <div class="profile-info">
+                        <strong>Admin</strong>
+                        <span>Administrator</span>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <!-- ================= CONTENT ================= -->
+
+        <div class="content">
+
+
+            <!-- ================= DASHBOARD ================= -->
+
+            <section id="dashboard" class="page active">
+
+                <div class="page-heading">
+
+                    <div>
+                        <span class="eyebrow">OVERVIEW</span>
+
+                        <h1>Dashboard</h1>
+
+                        <p>
+                            Welcome back! Here's what's happening with your students.
+                        </p>
+                    </div>
+
+                    <button class="primary-btn" onclick="showPage('add')">
+                        <i data-lucide="plus"></i>
+                        Add Student
+                    </button>
+
+                </div>
+
+
+                <!-- STAT CARDS -->
+
+                <div class="stats-grid">
+
+                    <div class="stat-card">
+
+                        <div class="stat-icon blue">
+                            <i data-lucide="users"></i>
+                        </div>
+
+                        <div class="stat-info">
+                            <span>Total Students</span>
+                            <strong id="totalStudents">0</strong>
+                        </div>
+
+                        <div class="stat-arrow">
+                            <i data-lucide="trending-up"></i>
+                        </div>
+
+                    </div>
+
+
+                    <div class="stat-card">
+
+                        <div class="stat-icon purple">
+                            <i data-lucide="chart-no-axes-column"></i>
+                        </div>
+
+                        <div class="stat-info">
+                            <span>Average Marks</span>
+                            <strong id="averageMarks">0.0</strong>
+                        </div>
+
+                        <div class="stat-arrow">
+                            %
+                        </div>
+
+                    </div>
+
+
+                    <div class="stat-card">
+
+                        <div class="stat-icon green">
+                            <i data-lucide="award"></i>
+                        </div>
+
+                        <div class="stat-info">
+                            <span>Highest Marks</span>
+                            <strong id="highestMarks">0</strong>
+                        </div>
+
+                        <div class="stat-arrow">
+                            <i data-lucide="trophy"></i>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- RECENT STUDENTS -->
+
+                <div class="section-card">
+
+                    <div class="section-header">
+
+                        <div>
+                            <h2>Recent Students</h2>
+                            <p>Latest students added to the system</p>
+                        </div>
+
+                        <button class="outline-btn"
+                                onclick="showPage('students')">
+                            View All
+                            <i data-lucide="arrow-right"></i>
+                        </button>
+
+                    </div>
+
+                    <div id="recentStudents">
+                        <div class="loading">
+                            Loading students...
+                        </div>
+                    </div>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- ================= ADD STUDENT ================= -->
+
+            <section id="add" class="page">
+
+                <div class="page-heading">
+
+                    <div>
+                        <span class="eyebrow">STUDENT MANAGEMENT</span>
+
+                        <h1>Add Student</h1>
+
+                        <p>
+                            Add a new student to your database.
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <div class="form-card">
+
+                    <div class="form-header">
+
+                        <div class="form-icon blue">
+                            <i data-lucide="user-plus"></i>
+                        </div>
+
+                        <div>
+                            <h2>Student Information</h2>
+                            <p>Enter the student's details below.</p>
+                        </div>
+
+                    </div>
+
+
+                    <form id="addForm">
+
+                        <div class="form-grid">
+
+                            <div class="input-group">
+
+                                <label>
+                                    Student Name
+                                </label>
+
+                                <div class="input-wrapper">
+
+                                    <i data-lucide="user"></i>
+
+                                    <input
+                                        type="text"
+                                        id="addName"
+                                        placeholder="Enter full name"
+                                        required
+                                    >
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="input-group">
+
+                                <label>
+                                    Course
+                                </label>
+
+                                <div class="input-wrapper">
+
+                                    <i data-lucide="book-open"></i>
+
+                                    <input
+                                        type="text"
+                                        id="addCourse"
+                                        placeholder="e.g. Data Analytics"
+                                        required
+                                    >
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="input-group">
+
+                            <label>
+                                Marks
+                            </label>
+
+                            <div class="input-wrapper">
+
+                                <i data-lucide="percent"></i>
+
+                                <input
+                                    type="number"
+                                    id="addMarks"
+                                    min="0"
+                                    max="100"
+                                    placeholder="Enter marks"
+                                    required
+                                >
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="form-actions">
+
+                            <button
+                                type="button"
+                                class="cancel-btn"
+                                onclick="showPage('dashboard')">
+                                Cancel
+                            </button>
+
+                            <button
+                                type="submit"
+                                class="primary-btn">
+                                <i data-lucide="user-plus"></i>
+                                Add Student
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- ================= VIEW STUDENTS ================= -->
+
+            <section id="students" class="page">
+
+                <div class="page-heading">
+
+                    <div>
+                        <span class="eyebrow">DATABASE</span>
+
+                        <h1>All Students</h1>
+
+                        <p>
+                            View and manage all registered students.
+                        </p>
+                    </div>
+
+                    <button class="primary-btn"
+                            onclick="showPage('add')">
+
+                        <i data-lucide="plus"></i>
+
+                        Add Student
+
+                    </button>
+
+                </div>
+
+
+                <div class="section-card">
+
+                    <div class="table-toolbar">
+
+                        <div class="student-count">
+                            <strong id="studentCount">0</strong>
+                            <span>students registered</span>
+                        </div>
+
+                        <div class="search-box">
+
+                            <i data-lucide="search"></i>
+
+                            <input
+                                id="searchInput"
+                                type="text"
+                                placeholder="Search students..."
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="table-container">
+
+                        <table>
+
+                            <thead>
+
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Student</th>
+                                    <th>Course</th>
+                                    <th>Marks</th>
+                                    <th>Performance</th>
+                                </tr>
+
+                            </thead>
+
+                            <tbody id="studentTableBody">
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- ================= UPDATE STUDENT ================= -->
+
+            <section id="update" class="page">
+
+                <div class="page-heading">
+
+                    <div>
+                        <span class="eyebrow">STUDENT MANAGEMENT</span>
+
+                        <h1>Update Student</h1>
+
+                        <p>
+                            Modify existing student information.
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <div class="form-card">
+
+                    <div class="form-header">
+
+                        <div class="form-icon purple">
+                            <i data-lucide="user-pen"></i>
+                        </div>
+
+                        <div>
+                            <h2>Edit Student</h2>
+                            <p>Select a student and update their details.</p>
+                        </div>
+
+                    </div>
+
+                    <div id="updateContent"></div>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- ================= DELETE STUDENT ================= -->
+
+            <section id="delete" class="page">
+
+                <div class="page-heading">
+
+                    <div>
+                        <span class="eyebrow">STUDENT MANAGEMENT</span>
+
+                        <h1>Delete Student</h1>
+
+                        <p>
+                            Remove a student from the database.
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <div class="form-card danger-card">
+
+                    <div class="form-header">
+
+                        <div class="form-icon red">
+                            <i data-lucide="user-minus"></i>
+                        </div>
+
+                        <div>
+                            <h2>Delete Student</h2>
+                            <p>This action cannot be undone.</p>
+                        </div>
+
+                    </div>
+
+                    <div id="deleteContent"></div>
+
+                </div>
+
+            </section>
+
+        </div>
+
+    </main>
+
+</div>
+
+
+<!-- ================= TOAST ================= -->
+
+<div id="toast" class="toast">
+
+    <div class="toast-icon">
+        <i data-lucide="check"></i>
+    </div>
+
+    <div>
+        <strong id="toastTitle">Success</strong>
+        <p id="toastMessage"></p>
+    </div>
+
+</div>
+
+
+<script src="script.js"></script>
+
+<script>
+    lucide.createIcons();
+</script>
+
+</body>
+</html>
