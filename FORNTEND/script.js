@@ -7,7 +7,7 @@
 
 // RAILWAY BACKEND
 // Deploy केल्यानंतर तुझ्या Railway backend URL ने replace कर.
-const API_URL = "http://127.0.0.1:8000";
+const API_URL = "https://student-management-brrm.onrender.com";
 
 // ============================================================
 // GLOBAL DATA
